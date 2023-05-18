@@ -39,6 +39,7 @@ public class BugController {
     }
 
     @GetMapping("/summary")
+    //отображение результатов новых/закрытых багов
     public String getBugSummary(Model model) {
         int newBugs = bugService.countBugsByStatus("New");
         int closedBugs = bugService.countBugsByStatus("Closed");
