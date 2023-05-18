@@ -1,46 +1,64 @@
 package com.project.testdashboard.controllers;
 
+import com.project.testdashboard.entities.Role;
 import com.project.testdashboard.entities.User;
-import com.project.testdashboard.repositories.UserRepository;
+import com.project.testdashboard.services.RoleService;
+import com.project.testdashboard.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.HashSet;
+import java.util.Set;
+
 
 @RestController
-@RequestMapping("/register")
+@RequestMapping("/api")
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST})
 public class RegistrationController {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-
     @Autowired
-    public RegistrationController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+    private UserService userService;
+    @Autowired
+    private RoleService roleService;
+
+
+    @GetMapping("/register/user")
+    public String registerPageUser(Principal principal) {
+        return "register user";
     }
 
-    @PostMapping
-    public ResponseEntity<String> registerUser(@RequestBody RegistrationRequest registrationRequest) {
-        // Проверяем, существует ли пользователь с указанным именем
-        if (userRepository.existsByUsernameOrEmail(registrationRequest.getUsername(), registrationRequest.getEmail())) {
-            return ResponseEntity.badRequest().body("Username or email is already exists");
+    @PostMapping("/register/user")
+    public ResponseEntity<?> registerUser(@ModelAttribute("user") User user, @RequestParam("password") String password, BindingResult result) {
+
+        // проверка ошибок валидации
+        if (result.hasErrors()) {
+            // возвращаем ошибки в виде JSON-объекта
+            return ResponseEntity.badRequest().body(result.getFieldErrors());
         }
 
-        // Создаем нового пользователя
-        User user = new User();
-        user.setUsername(registrationRequest.getUsername());
-        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-        // Назначаем роль "USER" по умолчанию (ваше приложение может иметь другую систему ролей)
-        user.setRole("USER");
+        // проверка наличия пользователей с таким же логином или почтой
+        if (userService.existsByUsernameOrEmail(user.getUsername(), user.getEmail())) {
+            return ResponseEntity.badRequest().body("Username or email is already taken!");
+        }
 
-        // Сохраняем пользователя в базе данных
-        userRepository.save(user);
+        // проверка наличия ролей
+        Set<Role> roles = new HashSet<>();
+        Role userRole = roleService.findByName("ROLE_USER");
+        if (userRole != null) {
+            roles.add(userRole);
+        }
 
-        return ResponseEntity.ok("User registered successfully");
+        // устанавливаем пароль
+        user.setPassword(password);
+
+        // сохраняем пользователя в базу данных
+        userService.registerUser(user, roles);
+
+        return ResponseEntity.ok("User registered successfully!");
     }
+
 }
 
