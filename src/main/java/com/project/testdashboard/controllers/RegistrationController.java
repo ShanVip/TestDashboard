@@ -24,6 +24,11 @@ public class RegistrationController {
     @Autowired
     private RoleService roleService;
 
+    private boolean isValidEmail(String email) {
+        String regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]+$";
+        return email.matches(regex);
+    }
+
 
     @GetMapping("/register/user")
     public String registerPageUser(Principal principal) {
@@ -37,6 +42,21 @@ public class RegistrationController {
         if (result.hasErrors()) {
             // возвращаем ошибки в виде JSON-объекта
             return ResponseEntity.badRequest().body(result.getFieldErrors());
+        }
+
+        // Проверка пустых полей
+        if (user.getUsername().isEmpty() || user.getEmail().isEmpty() || password.isEmpty()) {
+            return ResponseEntity.badRequest().body("Please fill in all fields!");
+        }
+
+        // проверка формата email
+        if (!isValidEmail(user.getEmail())) {
+            return ResponseEntity.badRequest().body("Invalid email format!");
+        }
+
+        // проверка длины пароля
+        if (password.length() < 6) {
+            return ResponseEntity.badRequest().body("Password should be at least 6 characters long!");
         }
 
         // проверка наличия пользователей с таким же логином или почтой
