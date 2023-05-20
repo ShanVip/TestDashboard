@@ -58,4 +58,7 @@ public class BugService {
     }
 
 
+    public Bug getBugById(Long bugId) {
+        return bugRepository.findById(bugId).orElse(null);
+    }
 }

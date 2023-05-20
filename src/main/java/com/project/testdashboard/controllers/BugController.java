@@ -2,13 +2,14 @@ package com.project.testdashboard.controllers;
 
 import com.project.testdashboard.entities.Bug;
 import com.project.testdashboard.services.BugService;
+import com.project.testdashboard.services.UserService;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -18,6 +19,13 @@ import java.util.Date;
 @RequestMapping("/bugs")
 public class BugController {
     private final BugService bugService;
+
+
+    private boolean isValidPriority(String priority) {
+        return priority.equalsIgnoreCase("easy") ||
+                priority.equalsIgnoreCase("medium") ||
+                priority.equalsIgnoreCase("high");
+    }
 
     @Autowired
     public BugController(BugService bugService) {
@@ -63,12 +71,6 @@ public class BugController {
         return ResponseEntity.ok("Bug registered successfully!");
     }
 
-    private boolean isValidPriority(String priority) {
-        return priority.equalsIgnoreCase("easy") ||
-                priority.equalsIgnoreCase("medium") ||
-                priority.equalsIgnoreCase("high");
-    }
-
     @GetMapping("/status-summary")
     public ResponseEntity<String> getStatusSummary() {
         int totalBugs = bugService.getTotalBugs();
@@ -82,6 +84,29 @@ public class BugController {
                 "Closed Bugs: " + closedBugs + " (" + closedPercentage + "%)";
 
         return ResponseEntity.ok(summary);
+    }
+
+    @PostMapping("/update-bug-status")
+    public ResponseEntity<String> updateBugStatus(@RequestParam("bugId") Long bugId) {
+        Bug bug = bugService.getBugById(bugId);
+
+        if (bug == null) {
+            return ResponseEntity.badRequest().body("Bug not found!");
+        }
+
+        String currentStatus = bug.getStatus();
+
+        if ("Closed".equals(currentStatus)) {
+            bug.setStatus("Open");
+        } else if ("Open".equals(currentStatus)) {
+            bug.setStatus("Closed");
+        } else {
+            return ResponseEntity.badRequest().body("Invalid bug status!");
+        }
+
+        bugService.saveBug(bug);
+
+        return ResponseEntity.ok("Bug status updated successfully!");
     }
 
 
