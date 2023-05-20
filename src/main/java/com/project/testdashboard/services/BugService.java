@@ -6,8 +6,7 @@ import com.project.testdashboard.repositories.BugRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class BugService {
@@ -19,27 +18,8 @@ public class BugService {
         this.bugRepository = bugRepository;
     }
 
-    public List<Bug> getAllBugs() {
-        return bugRepository.findAll();
-    }
-
-    public Optional<Bug> getBugById(Long id) {
-        return bugRepository.findById(id);
-    }
-
-    public Bug createBug(Bug bug) {
+    public Bug saveBug(Bug bug) {
+        // Дополнительная обработка или валидация данных перед сохранением (если необходимо)
         return bugRepository.save(bug);
-    }
-
-    public Bug updateBug(Bug bug) {
-        return bugRepository.save(bug);
-    }
-
-    public void deleteBug(Long id) {
-        bugRepository.deleteById(id);
-    }
-
-    public int countBugsByStatus(String status) {
-        return bugRepository.countByStatus(status);
     }
 }

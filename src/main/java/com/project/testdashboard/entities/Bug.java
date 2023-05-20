@@ -17,6 +17,12 @@ public class Bug {
 
     private String description;
 
+    private String stepsToPlay;
+
+    private String expectedResult;
+
+    private String realResult;
+
     private String status;
 
 }

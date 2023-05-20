@@ -3,15 +3,23 @@ services:
   db:
     image: postgres
     restart: always
-    ports:
-      - "5435:5435"
     environment:
-      POSTGRES_DB: your_database_name
-      POSTGRES_USER: your_username
-      POSTGRES_PASSWORD: your_password
+      POSTGRES_PASSWORD: example
+      POSTGRES_USER: ShanBase
+      POSTGRES_DB: Dashboard
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
 
   adminer:
     image: adminer
     restart: always
     ports:
-      - "8082:8082"
+      - "8083:8080"
+    depends_on:
+      - db
+
+volumes:
+  postgres-data:

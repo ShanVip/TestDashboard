@@ -1,50 +1,49 @@
 package com.project.testdashboard.controllers;
 
 import com.project.testdashboard.entities.Bug;
-import com.project.testdashboard.repositories.BugRepository;
 import com.project.testdashboard.services.BugService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
 @RequestMapping("/bugs")
 public class BugController {
     private final BugService bugService;
-    private final BugRepository bugRepository;
 
     @Autowired
-    public BugController(BugService bugService, BugRepository bugRepository) {
+    public BugController(BugService bugService) {
         this.bugService = bugService;
-        this.bugRepository = bugRepository;
     }
 
     @GetMapping("/form")
     public String showBugForm() {
-        return "bug-form";
+        return "bug-form"; // Имя шаблона формы (HTML страницы) для создания нового бага
     }
 
-    @PostMapping("/submit")
-    public String submitBug(Bug bug, Model model) {
-        // Сохранение бага в базе данных
-        bugRepository.save(bug);
+    @PostMapping("/save")
+    public ResponseEntity<String> saveBug(@RequestParam("name") String name,
+                                          @RequestParam("description") String description,
+                                          @RequestParam("stepsToPlay") String stepsToPlay,
+                                          @RequestParam("expectedResult") String expectedResult,
+                                          @RequestParam("realResult") String realResult,
+                                          @RequestParam("status") String status) {
+        Bug bug = new Bug();
+        bug.setName(name);
+        bug.setDescription(description);
+        bug.setStepsToPlay(stepsToPlay);
+        bug.setExpectedResult(expectedResult);
+        bug.setRealResult(realResult);
+        bug.setStatus(status);
 
-        // Передача данных в модель для отображения на странице
-        model.addAttribute("bug", bug);
+        bugService.saveBug(bug);
 
-        return "bug-details";
-    }
+        return ResponseEntity.ok("Bug registered successfully!");
 
-    @GetMapping("/summary")
-    //отображение результатов новых/закрытых багов
-    public String getBugSummary(Model model) {
-        int newBugs = bugService.countBugsByStatus("New");
-        int closedBugs = bugService.countBugsByStatus("Closed");
-        model.addAttribute("newBugs", newBugs);
-        model.addAttribute("closedBugs", closedBugs);
-        return "bug-summary";
     }
 }
