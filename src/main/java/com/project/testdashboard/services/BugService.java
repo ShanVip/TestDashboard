@@ -19,7 +19,6 @@ public class BugService {
     }
 
     public Bug saveBug(Bug bug) {
-        // Дополнительная обработка или валидация данных перед сохранением (если необходимо)
         return bugRepository.save(bug);
     }
 
@@ -33,28 +32,6 @@ public class BugService {
 
     public int getClosedBugsCount() {
         return bugRepository.countByStatus("Closed");
-    }
-
-    public int getOpenBugsPercentage() {
-        int totalBugs = getTotalBugs();
-        int openBugs = getOpenBugsCount();
-
-        if (totalBugs == 0) {
-            return 0;
-        }
-
-        return Math.round((openBugs / (float) totalBugs) * 100);
-    }
-
-    public int getClosedBugsPercentage() {
-        int totalBugs = getTotalBugs();
-        int closedBugs = getClosedBugsCount();
-
-        if (totalBugs == 0) {
-            return 0;
-        }
-
-        return Math.round((closedBugs / (float) totalBugs) * 100);
     }
 
 
