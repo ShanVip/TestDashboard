@@ -6,16 +6,19 @@ import com.project.testdashboard.services.RoleService;
 import com.project.testdashboard.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 
-@RestController
-@RequestMapping("/api")
+@Controller
+@RequestMapping("/authentication")
 @CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST})
 public class RegistrationController {
 
@@ -32,36 +35,57 @@ public class RegistrationController {
 
     @GetMapping("/register/user")
     public String registerPageUser(Principal principal) {
-        return "register user";
+        return "register";
     }
 
+    @GetMapping("/login")
+    public String loginPageUser(Principal principal) {
+        return "login";
+    }
+
+
+
     @PostMapping("/register/user")
-    public ResponseEntity<?> registerUser(@ModelAttribute("user") User user, @RequestParam("password") String password, BindingResult result) {
+    public String registerUser(
+            @ModelAttribute("user") User user,
+            @RequestParam("password") String password,
+            BindingResult result,
+            Model model) {
 
         // проверка ошибок валидации
         if (result.hasErrors()) {
             // возвращаем ошибки в виде JSON-объекта
-            return ResponseEntity.badRequest().body(result.getFieldErrors());
+            model.addAttribute("errorMessage",result.getFieldErrors());
+            return "register";
+//            return ResponseEntity.badRequest().body(result.getFieldErrors());
         }
 
         // Проверка пустых полей
         if (user.getUsername().isEmpty() || user.getEmail().isEmpty() || password.isEmpty()) {
-            return ResponseEntity.badRequest().body("Please fill in all fields!");
+            model.addAttribute("errorMessage","Please fill in all fields!");
+            return "register";
+//            return ResponseEntity.badRequest().body("Please fill in all fields!");
         }
 
         // проверка формата email
         if (!isValidEmail(user.getEmail())) {
-            return ResponseEntity.badRequest().body("Invalid email format!");
+            model.addAttribute("errorMessage","Invalid email format!");
+            return "register";
+//            return ResponseEntity.badRequest().body("Invalid email format!");
         }
 
         // проверка длины пароля
         if (password.length() < 6) {
-            return ResponseEntity.badRequest().body("Password should be at least 6 characters long!");
+            model.addAttribute("errorMessage","Password should be at least 6 characters long!");
+            return "register";
+//            return ResponseEntity.badRequest().body("Password should be at least 6 characters long!");
         }
 
         // проверка наличия пользователей с таким же логином или почтой
         if (userService.existsByUsernameOrEmail(user.getUsername(), user.getEmail())) {
-            return ResponseEntity.badRequest().body("Username or email is already taken!");
+            model.addAttribute("errorMessage","Username or email is already taken!");
+            return "register";
+//            return ResponseEntity.badRequest().body("Username or email is already taken!");
         }
 
         // проверка наличия ролей
@@ -77,7 +101,9 @@ public class RegistrationController {
         // сохраняем пользователя в базу данных
         userService.registerUser(user, roles);
 
-        return ResponseEntity.ok("User registered successfully!");
+        model.addAttribute("errorMessage","User registered successfully!");
+        return "register";
+//        return ResponseEntity.ok("User registered successfully!");
     }
 
 }

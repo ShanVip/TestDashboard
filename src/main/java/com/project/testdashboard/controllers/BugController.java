@@ -2,16 +2,23 @@ package com.project.testdashboard.controllers;
 
 import com.project.testdashboard.entities.Bug;
 import com.project.testdashboard.services.BugService;
+import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 
 @Controller
+@PreAuthorize("isAuthenticated()")
 @RequestMapping("/bugs")
 public class BugController {
     private final BugService bugService;
@@ -28,24 +35,59 @@ public class BugController {
         this.bugService = bugService;
     }
 
-    @GetMapping("/form")
-    public String showBugForm() {
-        return "bug-form"; // Имя шаблона формы (HTML страницы) для создания нового бага
+    @GetMapping("/")
+    public String getAllEntities(@RequestParam(defaultValue = "without") Optional<String> sort, Model model) {
+        List<Bug> entities;
+
+        switch (sort.get()){
+            case "id":
+                entities = bugService.getAllEntitiesSortedById();
+                break;
+            case "name":
+                entities = bugService.getAllEntitiesSortedByName();
+                break;
+
+            default:
+                entities = bugService.getAllEntities();
+        }
+
+
+
+        model.addAttribute("bugs", entities);
+        return "bugs-index";
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<String> saveBug(@RequestParam("name") String name,
-                                          @RequestParam("description") String description,
-                                          @RequestParam("stepsToPlay") String stepsToPlay,
-                                          @RequestParam("expectedResult") String expectedResult,
-                                          @RequestParam("realResult") String realResult,
-                                          @RequestParam("priority") String priority) {
+    @GetMapping("/{bugId}")
+    public String getEntity(@PathVariable long bugId, Model model){
+
+        Bug bug = bugService.getBugById(bugId);
+        model.addAttribute("bug", bug);
+        return "bug-index";
+    }
+
+    @GetMapping("/create")
+    public String showBugForm() {
+        return "bug-create"; // Имя шаблона формы (HTML страницы) для создания нового бага
+    }
+
+    @PostMapping("/create")
+    public String saveBug(
+            @RequestParam("name") String name,
+            @RequestParam("description") String description,
+            @RequestParam("stepsToPlay") String stepsToPlay,
+            @RequestParam("expectedResult") String expectedResult,
+            @RequestParam("realResult") String realResult,
+            @RequestParam("priority") String priority,
+            Model model
+    ) {
         if (name.isEmpty() || description.isEmpty() || stepsToPlay.isEmpty() || expectedResult.isEmpty() || realResult.isEmpty() || priority.isEmpty()) {
-            return ResponseEntity.badRequest().body("Ошибка: Все поля должны быть заполнены");
+            model.addAttribute("errorMessage", "Ошибка: Все поля должны быть заполнены");
+            return "bug-create";
         }
 
         if (!isValidPriority(priority)) {
-            return ResponseEntity.badRequest().body("Invalid priority value. Allowed values: easy, medium, high");
+            model.addAttribute("errorMessage","Invalid priority value. Allowed values: easy, medium, high");
+            return "bug-create";
         }
 
         Bug bug = new Bug();
@@ -63,12 +105,11 @@ public class BugController {
         bug.setCreatedAt(currentTime);
 
         bugService.saveBug(bug);
-
-        return ResponseEntity.ok("Bug registered successfully!");
+        return "redirect:/bugs/";
     }
 
     @GetMapping("/status-summary")
-    public ResponseEntity<String> getStatusSummary() {
+    public String getStatusSummary(Model model) {
         int totalBugs = bugService.getTotalBugs();
         int openBugs = bugService.getOpenBugsCount();
         int closedBugs = bugService.getClosedBugsCount();
@@ -76,33 +117,51 @@ public class BugController {
         int openPercentage = (int) Math.round((double) openBugs / totalBugs * 100);
         int closedPercentage = (int) Math.round((double) closedBugs / totalBugs * 100);
 
-        String summary = "Open Bugs: " + openBugs + " (" + openPercentage + "%)\n" +
-                "Closed Bugs: " + closedBugs + " (" + closedPercentage + "%)";
-
-        return ResponseEntity.ok(summary);
+        System.out.println(openPercentage);
+        System.out.println(closedPercentage);
+        model.addAttribute("openedBugCount", openBugs);
+        model.addAttribute("openedBugPercentage", openPercentage);
+        model.addAttribute("closedBugCount", closedBugs);
+        model.addAttribute("closedBugPercentage", closedPercentage);
+        return "bug-status-total";
+    }
+    @GetMapping("/{bugId}/update")
+    public String updateBugPage(@PathVariable long bugId, Model model){
+        Bug bug = bugService.getBugById(bugId);
+        if (bug == null) {
+            return "Bug not found!";
+        }
+        model.addAttribute("bug", bug);
+        return "bug-update";
     }
 
-    @PostMapping("/update-bug-status")
-    public ResponseEntity<String> updateBugStatus(@RequestParam("bugId") Long bugId) {
+    @PostMapping("/{bugId}/update")
+    public String updateBugStatus(
+            @RequestParam("name") Optional<String> name,
+            @RequestParam("description") Optional<String> description,
+            @RequestParam("stepsToPlay") Optional<String> stepsToPlay,
+            @RequestParam("expectedResult") Optional<String> expectedResult,
+            @RequestParam("realResult") Optional<String> realResult,
+            @RequestParam("priority") Optional<String> priority,
+            @RequestParam("status") Optional<String> status,
+            @PathVariable("bugId") Long bugId) {
         Bug bug = bugService.getBugById(bugId);
 
         if (bug == null) {
-            return ResponseEntity.badRequest().body("Bug not found!");
+            return "Bug not found!";
         }
 
-        String currentStatus = bug.getStatus();
-
-        if ("Closed".equals(currentStatus)) {
-            bug.setStatus("Open");
-        } else if ("Open".equals(currentStatus)) {
-            bug.setStatus("Closed");
-        } else {
-            return ResponseEntity.badRequest().body("Invalid bug status!");
-        }
+        if (name.get() != "") bug.setName(name.get());
+        if (description.get() != "") bug.setDescription(description.get());
+        if (stepsToPlay.get() != "") bug.setStepsToPlay(String.valueOf(stepsToPlay.get()));
+        if (expectedResult.get()!= "") bug.setExpectedResult(String.valueOf(expectedResult.get()));
+        if (realResult.get()!= "") bug.setRealResult(String.valueOf(realResult.get()));
+        if (priority.get()!= "") bug.setPriority(String.valueOf(priority.get()));
+        if (status.get()!= "") bug.setStatus(String.valueOf(status.get()));
 
         bugService.saveBug(bug);
 
-        return ResponseEntity.ok("Bug status updated successfully!");
+        return "redirect:/bugs/";
     }
 
 

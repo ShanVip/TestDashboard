@@ -31,11 +31,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().cors().disable().authorizeRequests()
                 .antMatchers("/api/register/user").permitAll()
+                .antMatchers("/bugs/**").authenticated()
                 .antMatchers("/authenticated/**").authenticated()
                 .antMatchers("/only_for_admins/**").hasRole("ADMIN")
                 .and()
-                .formLogin()
-                .and()
+                .formLogin(
+                        (form) -> form
+                        .loginPage("/authentication/login")
+                        .permitAll()
+                )
                 .logout().logoutSuccessUrl("/");
     }
 

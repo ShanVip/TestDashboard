@@ -1,0 +1,63 @@
+
+<!doctype html>
+<html lang="en">
+<div th:replace="fragments/navigation :: header">...</div>
+
+<body>
+
+<div th:replace="fragments/navigation :: navigation">...</div>
+<main role="main" class="container">
+
+  <div class="starter-template">
+
+    <form class="form-signin" method="post" th:action="|/bugs/${bug.id}/update|">
+      <h1 class="h3 mb-3 font-weight-normal">Форма для обновления бага</h1>
+
+
+      <label class="sr-only">Имя</label>
+      <input type="text" name="name" class="form-control" placeholder="Имя">
+
+      <label class="sr-only">Описание</label>
+      <input type="text" name="description" class="form-control" placeholder="Описание" >
+
+      <label class="sr-only">Шаги для воспроизведения</label>
+      <input type="text" name="stepsToPlay" class="form-control" placeholder="Шаги для воспроизведения" >
+
+      <label class="sr-only">Ожидаемый результат</label>
+      <input type="text" name="expectedResult" class="form-control" placeholder="Ожидаемый результат" >
+
+      <label class="sr-only">Реальный результат</label>
+      <input type="text" name="realResult" class="form-control" placeholder="Реальный результат" >
+
+      <label class="sr-only">Приоритет</label>
+      <select name="priority" class="form-control" style="height: 50px">
+        <option value="easy">easy</option>
+        <option value="medium">medium</option>
+        <option value="high">high</option>
+      </select>
+
+      <label class="sr-only">Статус</label>
+      <select name="status" class="form-control" style="height: 50px">
+        <option value="Open">Open</option>
+        <option value="Closed">Closed</option>
+      </select>
+
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Отправить</button>
+
+    </form>
+
+  </div>
+  <div>
+    <span th:if="${errorMessage}" class="alert alert-primary"  th:text="${errorMessage}"></span>
+  </div>
+</main><!-- /.container -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+<script src="../../assets/js/vendor/popper.min.js"></script>
+<script src="../../dist/js/bootstrap.min.js"></script>
+</body>
+</html>

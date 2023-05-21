@@ -6,6 +6,7 @@ import com.project.testdashboard.repositories.BugRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 
 
 @Service
@@ -34,8 +35,19 @@ public class BugService {
         return bugRepository.countByStatus("Closed");
     }
 
+    public List<Bug> getAllEntities() {
+        return bugRepository.findAll();
+    }
+
 
     public Bug getBugById(Long bugId) {
         return bugRepository.findById(bugId).orElse(null);
     }
+    public List<Bug> getAllEntitiesSortedById() {
+        return bugRepository.findAllByOrderById();
+    }
+    public List<Bug> getAllEntitiesSortedByName() {
+        return bugRepository.findAllByOrderByName();
+    }
+
 }

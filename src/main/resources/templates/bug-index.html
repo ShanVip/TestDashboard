@@ -1,0 +1,35 @@
+
+<!doctype html>
+<html lang="en">
+<div th:replace="fragments/navigation :: header">...</div>
+
+<body>
+<div th:replace="fragments/navigation :: navigation">...</div>
+
+<main role="main" class="container">
+
+  <div class="starter-template">
+
+    <div th:text="|Id: ${bug.id}|"></div>
+    <div th:text="|name:  ${bug.name}|"></div>
+    <div th:text="|description:  ${bug.description}|"></div>
+    <div th:text="|stepsToPlay:  ${bug.stepsToPlay}|"></div>
+    <div th:text="|expectedResult:  ${bug.expectedResult}|"></div>
+    <div th:text="|realResult:  ${bug.realResult}|"></div>
+    <div th:text="|status:  ${bug.status}|"></div>
+    <div th:text="|priority:  ${bug.priority}|"></div>
+    <div th:text="|createdAt:  ${bug.createdAt}|"></div>
+
+    <a type="button" class="btn btn-outline-warning"  th:href="|/bugs/${bug.id}/update|"> Изменить</a>
+  </div>
+</main><!-- /.container -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+<script src="../../assets/js/vendor/popper.min.js"></script>
+<script src="../../dist/js/bootstrap.min.js"></script>
+</body>
+</html>
