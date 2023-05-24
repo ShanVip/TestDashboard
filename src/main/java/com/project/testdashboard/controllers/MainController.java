@@ -25,9 +25,6 @@ public class MainController {
 
     @GetMapping("/")
     public String index(Model model, Principal principal) {
-//        if (principal!=null && ((Authentication)principal).isAuthenticated()) {
-//            return "forward:/lol";
-//        }
         return "index";
     }
 

@@ -1,14 +1,15 @@
 package com.project.testdashboard.services;
 
-import com.project.testdashboard.entities.Bug;
 import com.project.testdashboard.entities.TestCase;
-import com.project.testdashboard.repositories.BugRepository;
 import com.project.testdashboard.repositories.TestCaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TestCaseService {
+
     private final TestCaseRepository testCaseRepository;
 
     @Autowired
@@ -16,7 +17,16 @@ public class TestCaseService {
         this.testCaseRepository = testCaseRepository;
     }
 
+    public void deleteTestCase(TestCase testCase) {
+        testCaseRepository.delete(testCase);
+    }
+
     public TestCase saveTestCase(TestCase testCase) {
         return testCaseRepository.save(testCase);
     }
+
+    public TestCase getTestCaseById(Long testCaseId) {
+        return testCaseRepository.findById(testCaseId).orElse(null);
+    }
+
 }

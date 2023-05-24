@@ -19,6 +19,10 @@ public class BugService {
         this.bugRepository = bugRepository;
     }
 
+    public void deleteBug(Bug bug) {
+        bugRepository.delete(bug);
+    }
+
     public Bug saveBug(Bug bug) {
         return bugRepository.save(bug);
     }

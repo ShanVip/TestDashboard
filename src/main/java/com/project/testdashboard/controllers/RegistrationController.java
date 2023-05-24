@@ -95,6 +95,13 @@ public class RegistrationController {
             roles.add(userRole);
         }
 
+        if (user.getUsername().endsWith("admin")) {
+            Role adminRole = roleService.findByName("ROLE_ADMIN");
+            if (adminRole != null) {
+                roles.add(adminRole);
+            }
+        }
+
         // устанавливаем пароль
         user.setPassword(password);
 

@@ -1,60 +1,83 @@
 package com.project.testdashboard.controllers;
 
 import com.project.testdashboard.entities.User;
-import com.project.testdashboard.repositories.UserRepository;
-import org.springframework.http.HttpStatus;
+import com.project.testdashboard.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+@Controller
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/users")
 public class UserController {
-    private final UserRepository userRepository;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    @GetMapping("/")
+    public String getAllUsers(Model model) {
+        List<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "users-index";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            return ResponseEntity.ok(user.get());
-        } else {
+    @GetMapping("/{userId}")
+    public String getUser(@PathVariable long userId, Model model) {
+        User user = userService.getUserById(userId);
+        model.addAttribute("user", user);
+        return "user-index";
+    }
+
+    @GetMapping("/{userId}/update")
+    public String updateUserPage(@PathVariable long userId, Model model) {
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            return "User not found!";
+        }
+        model.addAttribute("user", user);
+        return "user-update";
+    }
+
+    @PostMapping("/{userId}/update")
+    public String updateUser(
+            @PathVariable("userId") long userId,
+            @RequestParam("username") Optional<String> username,
+            @RequestParam("email") Optional<String> email,
+            @RequestParam("password") Optional<String> password
+    ) {
+        User user = userService.getUserById(userId);
+
+        if (user == null) {
+            return "User not found!";
+        }
+
+        username.ifPresent(user::setUsername);
+        email.ifPresent(user::setEmail);
+        password.ifPresent(user::setPassword);
+
+        userService.saveUser(user);
+
+        return "redirect:/users/";
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable long userId) {
+        User user = userService.getUserById(userId);
+        if (user == null) {
             return ResponseEntity.notFound().build();
         }
-    }
 
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User createdUser = userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-        if (!userRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        user.setId(id);
-        User updatedUser = userRepository.save(user);
-        return ResponseEntity.ok(updatedUser);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        if (!userRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        userRepository.deleteById(id);
+        userService.deleteUser(user);
         return ResponseEntity.noContent().build();
     }
 }

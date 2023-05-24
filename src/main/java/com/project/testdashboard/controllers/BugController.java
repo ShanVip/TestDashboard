@@ -25,8 +25,9 @@ public class BugController {
 
 
     private boolean isValidPriority(String priority) {
-        return priority.equalsIgnoreCase("easy") ||
-                priority.equalsIgnoreCase("medium") ||
+        return priority.equalsIgnoreCase("blocker") ||
+                priority.equalsIgnoreCase("trivial") ||
+                priority.equalsIgnoreCase("low")  ||
                 priority.equalsIgnoreCase("high");
     }
 
@@ -164,5 +165,17 @@ public class BugController {
         return "redirect:/bugs/";
     }
 
+
+    @DeleteMapping("/{bugId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteBug(@PathVariable long bugId) {
+        Bug bug = bugService.getBugById(bugId);
+        if (bug == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        bugService.deleteBug(bug);
+        return ResponseEntity.noContent().build();
+    }
 
 }
