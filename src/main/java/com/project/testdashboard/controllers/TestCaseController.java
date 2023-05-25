@@ -50,8 +50,8 @@ public class TestCaseController {
     public String getEntity(@PathVariable long testCaseId, Model model){
 
         TestCase testCase = testCaseService.getBugById(testCaseId);
-        model.addAttribute("testCase", testCase);
-        return "bug-index";
+        model.addAttribute("testcase", testCase);
+        return "testcase-index";
     }
 
     @GetMapping("/create")
@@ -91,7 +91,7 @@ public class TestCaseController {
         if (testCase == null) {
             return "Bug not found!";
         }
-        model.addAttribute("testCase", testCase);
+        model.addAttribute("testcase", testCase);
         return "testcase-update";
     }
 
@@ -102,11 +102,13 @@ public class TestCaseController {
             @RequestParam("stepsToPlay") Optional<String> stepsToPlay,
             @RequestParam("expectedResult") Optional<String> expectedResult,
             @RequestParam("realResult") Optional<String> realResult,
-            @PathVariable("bugId") Long bugId) {
-        TestCase testCase = testCaseService.getBugById(bugId);
+            @PathVariable("testCaseId") Long testCaseId,
+            Model model) {
+        TestCase testCase = testCaseService.getBugById(testCaseId);
 
         if (testCase == null) {
-            return "Bug not found!";
+            model.addAttribute("errorMessage", "Bug not found!");
+            return "testcase-update";
         }
 
         if (name.get() != "") testCase.setName(name.get());
@@ -121,15 +123,15 @@ public class TestCaseController {
         return "redirect:/testcases/";
     }
 
-    @DeleteMapping("/{testCaseId}")
+    @PostMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteBug(@PathVariable long testCaseId) {
+    public String deleteBug(@RequestParam long testCaseId) {
         TestCase testCase = testCaseService.getBugById(testCaseId);
-        if (testCase == null) {
-            return ResponseEntity.notFound().build();
+        if (testCase != null) {
+            testCaseService.deleteTestCase(testCase);
         }
-        testCaseService.deleteTestCase(testCase);
-        return ResponseEntity.noContent().build();
+
+        return "redirect:/testcases/";
     }
 
 }

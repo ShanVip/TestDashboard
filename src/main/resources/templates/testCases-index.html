@@ -17,26 +17,34 @@
       <thead class="thead-dark">
       <tr>
         <th scope="col"><a href="?sort=id">id</a></th>
-        <th scope="col"><a href="?sort=name">Username</a></th>
-        <th scope="col"><a href="?sort=description">Email</a></th>
-        <th scope="col">Delete</th>
-
+        <th scope="col"><a href="?sort=name">Name</a></th>
+        <th scope="col">description</th>
+        <th scope="col">stepsToPlay</th>
+        <th scope="col">expectedResult</th>
+        <th scope="col">realResult</th>
+        <div sec:authorize="hasAnyRole('ADMIN')">
+          <th scope="col">DELETE</th>
+        </div>
       </tr>
       </thead>
       <tbody>
 
-      <tr th:each="user: ${users}">
-        <td><a th:text="${user.id}" th:href="|/users/${user.id}/|"></a> </td>
-        <td th:text="${user.username}" />
-        <td th:text="${user.email}" />
+      <tr th:each="testcase: ${testCases}">
+        <td><a th:text="${testcase.id}" th:href="|/testcases/${testcase.id}/|"></a> </td>
+        <td th:text="${testcase.name}" />
+        <td th:text="${testcase.description}" />
+        <td th:text="${testcase.stepsToPlay}" />
+        <td th:text="${testcase.expectedResult}" />
+        <td th:text="${testcase.realResult}" />
         <div sec:authorize="hasAnyRole('ADMIN')">
           <td>
-            <form method="POST" th:action="|/users/delete|">
-              <input type="hidden" id="userId" name="userId" th:value="${user.id}" />
+            <form method="POST" th:action="|/testcases/delete|">
+              <input type="hidden" id="testCaseId" name="testCaseId" th:value="${testcase.id}" />
               <button type="submit">Delete</button>
             </form>
           </td>
         </div>
+
       </tr>
 
       </tbody>

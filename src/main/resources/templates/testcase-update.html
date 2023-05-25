@@ -9,19 +9,25 @@
 <main role="main" class="container">
 
   <div class="starter-template">
-     <h th:text="|USER ID: ${user.id}|"></h>
-    <form class="form-signin" method="post" th:action="|/users/${user.id}/update|">
-      <h1 class="h3 mb-3 font-weight-normal">Форма для обновления бага</h1>
+
+    <form class="form-signin" method="post" th:action="|/testcases/${testcase.id}/update|">
+      <h1 class="h3 mb-3 font-weight-normal">Форма для обновления testcases</h1>
 
 
-      <label class="sr-only">Username</label>
-      <input type="text" name="username" class="form-control" placeholder="Username" th:value="${user.username}">
+      <label class="sr-only">Имя</label>
+      <input type="text" name="name" class="form-control" placeholder="Имя">
 
-      <label class="sr-only">Email</label>
-      <input type="text" name="email" class="form-control" placeholder="Email" th:value="${user.email}">
+      <label class="sr-only">Описание</label>
+      <input type="text" name="description" class="form-control" placeholder="Описание" >
 
-      <label class="sr-only">Password</label>
-      <input type="password" name="password" class="form-control" placeholder="Password" >
+      <label class="sr-only">Шаги для воспроизведения</label>
+      <input type="text" name="stepsToPlay" class="form-control" placeholder="Шаги для воспроизведения" >
+
+      <label class="sr-only">Ожидаемый результат</label>
+      <input type="text" name="expectedResult" class="form-control" placeholder="Ожидаемый результат" >
+
+      <label class="sr-only">Реальный результат</label>
+      <input type="text" name="realResult" class="form-control" placeholder="Реальный результат" >
 
       <button class="btn btn-lg btn-primary btn-block" type="submit">Отправить</button>
 

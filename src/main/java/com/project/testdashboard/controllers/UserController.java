@@ -60,6 +60,7 @@ public class UserController {
 
     @PostMapping("/{userId}/update")
     public String updateUser(
+            Model model,
             @PathVariable("userId") long userId,
             @RequestParam("username") Optional<String> username,
             @RequestParam("email") Optional<String> email,
@@ -76,7 +77,9 @@ public class UserController {
             if (!userService.isUsernameExists(newUsername)) {
                 user.setUsername(newUsername);
             } else {
-                return "Username already exists!";
+                model.addAttribute("errorMessage","Username already exists!");
+                model.addAttribute("user",user);
+                return "user-update";
             }
         }
 
@@ -85,7 +88,10 @@ public class UserController {
             if (isValidEmail(newEmail) && !userService.isEmailExists(newEmail)) {
                 user.setEmail(newEmail);
             } else {
-                return "Invalid email format!";
+                model.addAttribute("errorMessage","Invalid email format!");
+                model.addAttribute("user",user);
+                return "user-update";
+
             }
         }
 
@@ -95,7 +101,9 @@ public class UserController {
                 String hashedPassword = passwordEncoder.encode(newPassword);
                 user.setPassword(hashedPassword);
             } else {
-                return "Password should be at least 6 characters long!";
+                model.addAttribute("errorMessage","Password should be at least 6 characters long!");
+                model.addAttribute("user",user);
+                return "user-update";
             }
         }
 
@@ -104,14 +112,15 @@ public class UserController {
         return "redirect:/users/";
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable long userId) {
+    @PostMapping("/delete")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String deleteUser(@RequestParam long userId) {
         User user = userService.getUserById(userId);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
+        if (user != null) {
+            userService.deleteUser(user);
         }
 
-        userService.deleteUser(user);
-        return ResponseEntity.noContent().build();
+
+        return "redirect:/users/";
     }
 }

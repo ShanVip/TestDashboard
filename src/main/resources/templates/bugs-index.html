@@ -18,13 +18,21 @@
       <tr>
         <th scope="col"><a href="?sort=id">id</a></th>
         <th scope="col"><a href="?sort=name">Name</a></th>
-        <th scope="col"><a href="?sort=description">description</a></th>
-        <th scope="col"><a href="?sort=stepsToPlay">stepsToPlay</a></th>
-        <th scope="col"><a href="?sort=expectedResult">expectedResult</a></th>
-        <th scope="col"><a href="?sort=realResult">realResult</a></th>
+<!--        <th scope="col"><a href="?sort=description">description</a></th>-->
+        <th scope="col">description</th>
+<!--        <th scope="col"><a href="?sort=stepsToPlay">stepsToPlay</a></th>-->
+        <th scope="col">stepsToPlay</th>
+<!--        <th scope="col"><a href="?sort=expectedResult">expectedResult</a></th>-->
+        <th scope="col">expectedResult</th>
+<!--        <th scope="col"><a href="?sort=realResult">realResult</a></th>-->
+        <th scope="col">realResult</th>
         <th scope="col"><a href="?sort=status">status</a></th>
         <th scope="col"><a href="?sort=priority">priority</a></th>
-        <th scope="col"><a href="?sort=createdAt">createdAt</a></th>
+<!--        <th scope="col"><a href="?sort=createdAt">createdAt</a></th>-->
+        <th scope="col">createdAt</th>
+        <div sec:authorize="hasAnyRole('ADMIN')">
+          <th scope="col">DELETE</th>
+        </div>
       </tr>
       </thead>
       <tbody>
@@ -39,6 +47,14 @@
         <td th:text="${bug.status}" />
         <td th:text="${bug.priority}" />
         <td th:text="${bug.createdAt}" />
+        <div sec:authorize="hasAnyRole('ADMIN')">
+          <td>
+            <form method="POST" th:action="|/bugs/delete|">
+              <input type="hidden" id="bugId" name="bugId" th:value="${bug.id}" />
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </div>
       </tr>
 
       </tbody>

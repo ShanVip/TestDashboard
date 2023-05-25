@@ -43,6 +43,14 @@
           </div>
         </li>
 
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="dropdown03" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">TestCase</a>
+          <div class="dropdown-menu" aria-labelledby="dropdown03">
+            <a class="dropdown-item" href="/testcases/">Показать все Testcase </a>
+            <a class="dropdown-item" href="/testcases/create">Добавить новый Testcase</a>
+          </div>
+        </li>
+
         <a class="nav-item" href="/logout">Выход</a>
       </div>
       <div sec:authorize="!isAuthenticated()">

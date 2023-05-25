@@ -166,16 +166,15 @@ public class BugController {
     }
 
 
-    @DeleteMapping("/{bugId}")
+    @PostMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteBug(@PathVariable long bugId) {
+    public String deleteBug(@RequestParam long bugId) {
         Bug bug = bugService.getBugById(bugId);
-        if (bug == null) {
-            return ResponseEntity.notFound().build();
+        if (bug != null) {
+            bugService.deleteBug(bug);
         }
 
-        bugService.deleteBug(bug);
-        return ResponseEntity.noContent().build();
+        return "redirect:/bugs/";
     }
 
 }
