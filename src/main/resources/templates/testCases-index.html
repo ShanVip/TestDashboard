@@ -38,9 +38,9 @@
         <td th:text="${testcase.realResult}" />
         <div sec:authorize="hasAnyRole('ADMIN')">
           <td>
-            <form method="POST" th:action="|/testcases/delete|">
+            <form method="POST" th:action="|/testcases/delete|" id="delete-form">
               <input type="hidden" id="testCaseId" name="testCaseId" th:value="${testcase.id}" />
-              <button type="submit">Delete</button>
+              <button type="submit" class="btn btn-danger">Delete</button>
             </form>
           </td>
         </div>
@@ -61,5 +61,14 @@
 <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
 <script src="../../assets/js/vendor/popper.min.js"></script>
 <script src="../../dist/js/bootstrap.min.js"></script>
+<script>
+  document.getElementById("delete-form").addEventListener("submit", function() {
+   if (confirm("Are you sure to submit")) {
+      return true;
+   } else {
+      return false;
+   }
+});
+</script>
 </body>
 </html>

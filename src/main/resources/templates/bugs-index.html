@@ -44,9 +44,9 @@
         <td th:text="${bug.createdAt}" />
         <div sec:authorize="hasAnyRole('ADMIN')">
           <td>
-            <form method="POST" th:action="|/bugs/delete|">
+            <form method="POST" th:action="|/bugs/delete|" id="delete-form">
               <input type="hidden" id="bugId" name="bugId" th:value="${bug.id}" />
-              <button type="submit">Delete</button>
+              <button type="button" class="btn btn-danger" id="as2">Delete</button>
             </form>
           </td>
         </div>
@@ -66,6 +66,19 @@
 <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
 <script src="../../assets/js/vendor/popper.min.js"></script>
 <script src="../../dist/js/bootstrap.min.js"></script>
+<script>
 
+  document.getElementById("as2").addEventListener("click", function(){
+
+   if (confirm("Are you sure to submit")) {
+      document.getElementById("delete-form").submit();
+   } else {
+      return false;
+   }
+
+
+  });
+
+</script>
 </body>
 </html>
