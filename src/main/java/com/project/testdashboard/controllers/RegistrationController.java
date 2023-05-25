@@ -52,38 +52,31 @@ public class RegistrationController {
             BindingResult result,
             Model model) {
 
-        // проверка ошибок валидации
         if (result.hasErrors()) {
-            // возвращаем ошибки в виде JSON-объекта
             model.addAttribute("errorMessage",result.getFieldErrors());
             return "register";
         }
 
-        // Проверка пустых полей
         if (user.getUsername().isEmpty() || user.getEmail().isEmpty() || password.isEmpty()) {
             model.addAttribute("errorMessage","Please fill in all fields!");
             return "register";
         }
 
-        // проверка формата email
         if (!isValidEmail(user.getEmail())) {
             model.addAttribute("errorMessage","Invalid email format!");
             return "register";
         }
 
-        // проверка длины пароля
         if (password.length() < 6) {
             model.addAttribute("errorMessage","Password should be at least 6 characters long!");
             return "register";
         }
 
-        // проверка наличия пользователей с таким же логином или почтой
         if (userService.existsByUsernameOrEmail(user.getUsername(), user.getEmail())) {
             model.addAttribute("errorMessage","Username or email is already taken!");
             return "register";
         }
 
-        // проверка наличия ролей
         Set<Role> roles = new HashSet<>();
         Role userRole = roleService.findByName("ROLE_USER");
         if (userRole != null) {
@@ -97,10 +90,8 @@ public class RegistrationController {
             }
         }
 
-        // устанавливаем пароль
         user.setPassword(password);
 
-        // сохраняем пользователя в базу данных
         userService.registerUser(user, roles);
 
         model.addAttribute("errorMessage","User registered successfully!");

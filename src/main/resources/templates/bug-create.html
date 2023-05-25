@@ -20,10 +20,10 @@
       <input type="text" name="name" class="form-control" placeholder="Имя" required>
 
       <label class="sr-only">Описание</label>
-      <input type="text" name="description" class="form-control" placeholder="Описание" required>
+      <textarea name="description" class="form-control" placeholder="Описание" required></textarea>
 
       <label class="sr-only">Шаги для воспроизведения</label>
-      <input type="text" name="stepsToPlay" class="form-control" placeholder="Шаги для воспроизведения" required>
+      <textarea name="stepsToPlay" class="form-control" placeholder="Шаги для воспроизведения" required></textarea>
 
       <label class="sr-only">Ожидаемый результат</label>
       <input type="text" name="expectedResult" class="form-control" placeholder="Ожидаемый результат" required>
@@ -33,9 +33,10 @@
 
       <label class="sr-only">Приоритет</label>
       <select name="priority" class="form-control" style="height: 50px">
-        <option value="easy">easy</option>
-        <option value="medium">medium</option>
+        <option value="blocker">blocker</option>
+        <option value="low">low</option>
         <option value="high">high</option>
+        <option value="trivial">trivial</option>
       </select>
 
       <button class="btn btn-lg btn-primary btn-block" type="submit">Отправить</button>

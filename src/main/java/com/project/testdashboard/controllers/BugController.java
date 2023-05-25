@@ -3,7 +3,6 @@ package com.project.testdashboard.controllers;
 import com.project.testdashboard.entities.Bug;
 import com.project.testdashboard.services.BugService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,25 +35,13 @@ public class BugController {
 
     @GetMapping("/")
     public String getAllEntities(@RequestParam(defaultValue = "without") Optional<String> sort, Model model) {
-        List<Bug> entities;
-
-        switch (sort.get()){
-            case "id":
-                entities = bugService.getAllEntitiesSortedById();
-                break;
-            case "name":
-                entities = bugService.getAllEntitiesSortedByName();
-                break;
-            case "priority":
-                entities = bugService.getAllEntitiesSortedByPriority();
-                break;
-            case "status":
-                entities = bugService.getAllEntitiesSortedByStatus();
-                break;
-
-            default:
-                entities = bugService.getAllEntities();
-        }
+        List<Bug> entities = switch (sort.get()) {
+            case "id" -> bugService.getAllEntitiesSortedById();
+            case "name" -> bugService.getAllEntitiesSortedByName();
+            case "priority" -> bugService.getAllEntitiesSortedByPriority();
+            case "status" -> bugService.getAllEntitiesSortedByStatus();
+            default -> bugService.getAllEntities();
+        };
 
         model.addAttribute("bugs", entities);
         return "bugs-index";
@@ -89,7 +76,7 @@ public class BugController {
         }
 
         if (!isValidPriority(priority)) {
-            model.addAttribute("errorMessage","Invalid priority value. Allowed values: easy, medium, high");
+            model.addAttribute("errorMessage","Invalid priority value. Allowed values: blocker, high, low, trivial");
             return "bug-create";
         }
 
