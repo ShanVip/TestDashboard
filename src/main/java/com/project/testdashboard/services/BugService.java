@@ -54,4 +54,11 @@ public class BugService {
         return bugRepository.findAllByOrderByName();
     }
 
+    public List<Bug> getAllEntitiesSortedByPriority() {
+        return  bugRepository.findAllByOrderByPriority();
+    }
+
+    public List<Bug> getAllEntitiesSortedByStatus() {
+        return  bugRepository.findAllByOrderByStatus();
+    }
 }

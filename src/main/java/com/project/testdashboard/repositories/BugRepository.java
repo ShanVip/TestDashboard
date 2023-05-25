@@ -10,5 +10,6 @@ public interface BugRepository extends JpaRepository<Bug, Long> {
     int countByStatus(String status);
     List<Bug> findAllByOrderById();
     List<Bug> findAllByOrderByName();
-
+    List<Bug> findAllByOrderByPriority();
+    List<Bug> findAllByOrderByStatus();
 }

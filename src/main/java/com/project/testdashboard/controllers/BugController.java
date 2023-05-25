@@ -45,12 +45,16 @@ public class BugController {
             case "name":
                 entities = bugService.getAllEntitiesSortedByName();
                 break;
+            case "priority":
+                entities = bugService.getAllEntitiesSortedByPriority();
+                break;
+            case "status":
+                entities = bugService.getAllEntitiesSortedByStatus();
+                break;
 
             default:
                 entities = bugService.getAllEntities();
         }
-
-
 
         model.addAttribute("bugs", entities);
         return "bugs-index";
