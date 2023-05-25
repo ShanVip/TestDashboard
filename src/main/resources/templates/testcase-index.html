@@ -1,0 +1,59 @@
+
+<!doctype html>
+<html lang="en">
+<div th:replace="fragments/navigation :: header">...</div>
+
+<body>
+
+<div th:replace="fragments/navigation :: navigation">...</div>
+
+<main role="main" class="container">
+
+  <div class="starter-template">
+
+
+
+    <table class="table">
+      <thead class="thead-dark">
+      <tr>
+        <th scope="col"><a href="?sort=id">id</a></th>
+        <th scope="col"><a href="?sort=name">Name</a></th>
+        <th scope="col"><a href="?sort=description">description</a></th>
+        <th scope="col"><a href="?sort=stepsToPlay">stepsToPlay</a></th>
+        <th scope="col"><a href="?sort=expectedResult">expectedResult</a></th>
+        <th scope="col"><a href="?sort=realResult">realResult</a></th>
+        <th scope="col"><a href="?sort=status">status</a></th>
+        <th scope="col"><a href="?sort=priority">priority</a></th>
+        <th scope="col"><a href="?sort=createdAt">createdAt</a></th>
+      </tr>
+      </thead>
+      <tbody>
+
+      <tr th:each="bug: ${bugs}">
+        <td><a th:text="${bug.id}" th:href="|/bugs/${bug.id}/|"></a> </td>
+        <td th:text="${bug.name}" />
+        <td th:text="${bug.description}" />
+        <td th:text="${bug.stepsToPlay}" />
+        <td th:text="${bug.expectedResult}" />
+        <td th:text="${bug.realResult}" />
+        <td th:text="${bug.status}" />
+        <td th:text="${bug.priority}" />
+        <td th:text="${bug.createdAt}" />
+      </tr>
+
+      </tbody>
+    </table>
+
+
+  </div>
+</main><!-- /.container -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+<script src="../../assets/js/vendor/popper.min.js"></script>
+<script src="../../dist/js/bootstrap.min.js"></script>
+</body>
+</html>

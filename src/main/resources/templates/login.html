@@ -17,7 +17,7 @@
   <!-- Custom styles for this template -->
   <link th:href="@{/css/signin.css}" rel="stylesheet">
 </head>
-
+<div th:replace="fragments/navigation :: navigation">...</div>
 <body class="text-center">
 
   <form th:action="@{/authentication/login}" method="post" class="form-signin">
@@ -31,6 +31,7 @@
     <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
 
     <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    <a class="btn btn-lg btn-primary btn-block" type="submit" href="/authentication/register/user">Registration</a>
     <p class="mt-5 mb-3 text-muted">&copy; 2023</p>
   </form>
 </body>

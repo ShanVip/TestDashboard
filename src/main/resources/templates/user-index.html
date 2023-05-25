@@ -1,0 +1,30 @@
+
+<!doctype html>
+<html lang="en">
+<div th:replace="fragments/navigation :: header">...</div>
+
+<body>
+<div th:replace="fragments/navigation :: navigation">...</div>
+
+<main role="main" class="container">
+
+  <div class="starter-template">
+
+    <div th:text="|Id: ${user.id}|"></div>
+    <div th:text="|username:  ${user.username}|"></div>
+    <div th:text="|email:  ${user.email}|"></div>
+
+
+    <a type="button" class="btn btn-outline-warning"  th:href="|/users/${user.id}/update|"> Изменить</a>
+  </div>
+</main><!-- /.container -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+<script src="../../assets/js/vendor/popper.min.js"></script>
+<script src="../../dist/js/bootstrap.min.js"></script>
+</body>
+</html>

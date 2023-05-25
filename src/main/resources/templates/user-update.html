@@ -1,0 +1,44 @@
+
+<!doctype html>
+<html lang="en">
+<div th:replace="fragments/navigation :: header">...</div>
+
+<body>
+
+<div th:replace="fragments/navigation :: navigation">...</div>
+<main role="main" class="container">
+
+  <div class="starter-template">
+
+    <form class="form-signin" method="post" th:action="|/users/${user.id}/update|">
+      <h1 class="h3 mb-3 font-weight-normal">Форма для обновления бага</h1>
+
+
+      <label class="sr-only">Username</label>
+      <input type="text" name="username" class="form-control" placeholder="Username">
+
+      <label class="sr-only">Email</label>
+      <input type="text" name="email" class="form-control" placeholder="Email" >
+
+      <label class="sr-only">Password</label>
+      <input type="password" name="password" class="form-control" placeholder="Password" >
+
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Отправить</button>
+
+    </form>
+
+  </div>
+  <div>
+    <span th:if="${errorMessage}" class="alert alert-primary"  th:text="${errorMessage}"></span>
+  </div>
+</main><!-- /.container -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+<script src="../../assets/js/vendor/popper.min.js"></script>
+<script src="../../dist/js/bootstrap.min.js"></script>
+</body>
+</html>
