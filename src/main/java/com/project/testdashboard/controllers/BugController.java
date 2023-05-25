@@ -2,9 +2,7 @@ package com.project.testdashboard.controllers;
 
 import com.project.testdashboard.entities.Bug;
 import com.project.testdashboard.services.BugService;
-import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -118,8 +116,6 @@ public class BugController {
         int openPercentage = (int) Math.round((double) openBugs / totalBugs * 100);
         int closedPercentage = (int) Math.round((double) closedBugs / totalBugs * 100);
 
-        System.out.println(openPercentage);
-        System.out.println(closedPercentage);
         model.addAttribute("openedBugCount", openBugs);
         model.addAttribute("openedBugPercentage", openPercentage);
         model.addAttribute("closedBugCount", closedBugs);

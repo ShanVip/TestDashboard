@@ -91,4 +91,15 @@ public class UserService implements UserDetailsService {
         return userRepository.existsByEmail(email);
     }
 
+    public boolean isUsernameExists(String username) {
+        User existingUser = userRepository.findByUsername(username);
+        return existingUser != null;
+    }
+
+    public boolean isEmailExists(String email) {
+        User existingUser = userRepository.findByEmail(email);
+        return existingUser != null;
+    }
+
+
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 @Service
 public class TestCaseService {
 
@@ -26,6 +27,19 @@ public class TestCaseService {
     }
 
     public TestCase getTestCaseById(Long testCaseId) {
+        return testCaseRepository.findById(testCaseId).orElse(null);
+    }
+    public List<TestCase> getAllEntitiesSortedById() {
+        return testCaseRepository.findAllByOrderById();
+    }
+    public List<TestCase> getAllEntitiesSortedByName() {
+        return testCaseRepository.findAllByOrderByName();
+    }
+    public List<TestCase> getAllEntities() {
+        return testCaseRepository.findAll();
+    }
+
+    public TestCase getBugById(Long testCaseId) {
         return testCaseRepository.findById(testCaseId).orElse(null);
     }
 
