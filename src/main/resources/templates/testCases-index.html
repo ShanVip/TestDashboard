@@ -1,74 +1,65 @@
-
 <!doctype html>
 <html lang="en">
-<div th:replace="fragments/navigation :: header">...</div>
-
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Cases</title>
+  <!-- Ваши стили и скрипты -->
+</head>
 <body>
+
+<div th:replace="fragments/navigation :: header">...</div>
 
 <div th:replace="fragments/navigation :: navigation">...</div>
 
 <main role="main" class="container">
-
   <div class="starter-template">
-
-
+    <h1>Test Cases</h1>
 
     <table class="table">
       <thead class="thead-dark">
       <tr>
-        <th scope="col"><a href="?sort=id">id</a></th>
+        <th scope="col"><a href="?sort=id">ID</a></th>
         <th scope="col"><a href="?sort=name">Имя</a></th>
         <th scope="col">Описание</th>
         <th scope="col">Шаги для воспроизведения</th>
         <th scope="col">Ожидаемый результат</th>
-        <th scope="col">Реальный результат</th>
-        <div sec:authorize="hasAnyRole('ADMIN')">
-          <th scope="col">DELETE</th>
-        </div>
+        <th scope="col">Полученный результат</th>
+        <th scope="col">Удалить</th>
       </tr>
       </thead>
       <tbody>
-
       <tr th:each="testcase: ${testCases}">
-        <td><a th:text="${testcase.id}" th:href="|/testcases/${testcase.id}/|"></a> </td>
+        <td><a th:text="${testcase.id}" th:href="|/testcases/${testcase.id}/|"></a></td>
         <td th:text="${testcase.name}" />
         <td th:text="${testcase.description}" />
         <td th:text="${testcase.stepsToPlay}" />
         <td th:text="${testcase.expectedResult}" />
         <td th:text="${testcase.realResult}" />
-        <div sec:authorize="hasAnyRole('ADMIN')">
-          <td>
-            <form method="POST" th:action="|/testcases/delete|" id="delete-form">
-              <input type="hidden" id="testCaseId" name="testCaseId" th:value="${testcase.id}" />
-              <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
-          </td>
-        </div>
-
+        <td>
+          <form method="POST" th:action="|/testcases/delete|">
+            <input type="hidden" name="testCaseId" th:value="${testcase.id}" />
+            <button type="button" class="btn btn-danger delete-btn">Удалить</button>
+          </form>
+        </td>
       </tr>
-
       </tbody>
     </table>
-
-
   </div>
-</main><!-- /.container -->
+</main>
 
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
-<script src="../../assets/js/vendor/popper.min.js"></script>
-<script src="../../dist/js/bootstrap.min.js"></script>
 <script>
-  document.getElementById("delete-form").addEventListener("submit", function() {
-   if (confirm("Are you sure to submit")) {
-      return true;
-   } else {
-      return false;
-   }
-});
+  document.addEventListener("DOMContentLoaded", function() {
+    var deleteButtons = document.getElementsByClassName("delete-btn");
+    for (var i = 0; i < deleteButtons.length; i++) {
+      deleteButtons[i].addEventListener("click", function() {
+        if (confirm("Вы уверены?")) {
+          this.parentElement.submit();
+        }
+      });
+    }
+  });
 </script>
 </body>
 </html>

@@ -1,57 +1,59 @@
-
 <!doctype html>
 <html lang="en">
-<div th:replace="fragments/navigation :: header">...</div>
-
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management</title>
+  <!-- Ваши стили и скрипты -->
+</head>
 <body>
+
+<div th:replace="fragments/navigation :: header">...</div>
 
 <div th:replace="fragments/navigation :: navigation">...</div>
 
 <main role="main" class="container">
-
   <div class="starter-template">
-
-
+    <h1>User Management</h1>
 
     <table class="table">
       <thead class="thead-dark">
       <tr>
-        <th scope="col"><a href="?sort=id">id</a></th>
-        <th scope="col"><a href="?sort=name">Логин</a></th>
+        <th scope="col"><a href="?sort=id">ID</a></th>
+        <th scope="col"><a href="?sort=name">Username</a></th>
         <th scope="col"><a href="?sort=description">Email</a></th>
         <th scope="col">Delete</th>
-
       </tr>
       </thead>
       <tbody>
-
       <tr th:each="user: ${users}">
-        <td><a th:text="${user.id}" th:href="|/users/${user.id}/|"></a> </td>
+        <td><a th:text="${user.id}" th:href="|/users/${user.id}/|"></a></td>
         <td th:text="${user.username}" />
         <td th:text="${user.email}" />
-        <div sec:authorize="hasAnyRole('ADMIN')">
-          <td>
-            <form method="POST" th:action="|/users/delete|">
-              <input type="hidden" id="userId" name="userId" th:value="${user.id}" />
-              <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
-          </td>
-        </div>
+        <td>
+          <form method="POST" th:action="|/users/delete|">
+            <input type="hidden" name="userId" th:value="${user.id}" />
+            <button type="button" class="btn btn-danger delete-btn">Удалить</button>
+          </form>
+        </td>
       </tr>
-
       </tbody>
     </table>
-
-
   </div>
-</main><!-- /.container -->
+</main>
 
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
-<script src="../../assets/js/vendor/popper.min.js"></script>
-<script src="../../dist/js/bootstrap.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var deleteButtons = document.getElementsByClassName("delete-btn");
+    for (var i = 0; i < deleteButtons.length; i++) {
+      deleteButtons[i].addEventListener("click", function() {
+        if (confirm("Вы уверены?")) {
+          this.parentElement.submit();
+        }
+      });
+    }
+  });
+</script>
 </body>
 </html>

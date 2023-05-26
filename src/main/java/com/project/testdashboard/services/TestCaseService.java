@@ -43,4 +43,7 @@ public class TestCaseService {
         return testCaseRepository.findById(testCaseId).orElse(null);
     }
 
+    public int getTotalTestCase() {
+        return testCaseRepository.findAll().size();
+    }
 }

@@ -41,7 +41,6 @@
            aria-expanded="false">Баги</a>
         <div class="dropdown-menu" aria-labelledby="dropdown01">
           <a class="dropdown-item" href="/bugs/create">Добавить новый баг</a>
-          <a class="dropdown-item" href="/bugs/status-summary">Статус</a>
           <a class="dropdown-item" href="/bugs/">Показать все баги</a>
         </div>
       </li>
@@ -52,6 +51,9 @@
           <a class="dropdown-item" href="/testcases/create">Добавить новый тест кейс</a>
           <a class="dropdown-item" href="/testcases/">Показать все тест кейсы</a>
         </div>
+      </li>
+      <li sec:authorize="hasRole('ROLE_USER')" class="nav-item dropdown">
+        <a class="nav-link" href="/bugs/status-summary">Эффективность</a>
       </li>
       <li sec:authorize="hasAnyRole('ADMIN')" class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" id="dropdown02" data-toggle="dropdown" aria-haspopup="true"

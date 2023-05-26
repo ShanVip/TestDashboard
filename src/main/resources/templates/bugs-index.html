@@ -1,39 +1,39 @@
-
 <!doctype html>
 <html lang="en">
-<div th:replace="fragments/navigation :: header">...</div>
-
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bugs</title>
+  <!-- Ваши стили и скрипты -->
+</head>
 <body>
+
+<div th:replace="fragments/navigation :: header">...</div>
 
 <div th:replace="fragments/navigation :: navigation">...</div>
 
 <main role="main" class="container">
-
   <div class="starter-template">
-
-
+    <h1>Bugs</h1>
 
     <table class="table">
       <thead class="thead-dark">
       <tr>
-        <th scope="col"><a href="?sort=id">id</a></th>
+        <th scope="col"><a href="?sort=id">ID</a></th>
         <th scope="col"><a href="?sort=name">Имя</a></th>
         <th scope="col">Описание</th>
         <th scope="col">Шаги для воспроизведения</th>
         <th scope="col">Ожидаемый результат</th>
-        <th scope="col">Реальный результат</th>
+        <th scope="col">Полученный результат</th>
         <th scope="col"><a href="?sort=status">Статус</a></th>
         <th scope="col"><a href="?sort=priority">Приоритет</a></th>
-        <th scope="col">createdAt</th>
-        <div sec:authorize="hasAnyRole('ADMIN')">
-          <th scope="col">DELETE</th>
-        </div>
+        <th scope="col">Создано</th>
+        <th scope="col">Удалить</th>
       </tr>
       </thead>
       <tbody>
-
       <tr th:each="bug: ${bugs}">
-        <td><a th:text="${bug.id}" th:href="|/bugs/${bug.id}/|"></a> </td>
+        <td><a th:text="${bug.id}" th:href="|/bugs/${bug.id}/|"></a></td>
         <td th:text="${bug.name}" />
         <td th:text="${bug.description}" />
         <td th:text="${bug.stepsToPlay}" />
@@ -42,43 +42,30 @@
         <td th:text="${bug.status}" />
         <td th:text="${bug.priority}" />
         <td th:text="${bug.createdAt}" />
-        <div sec:authorize="hasAnyRole('ADMIN')">
-          <td>
-            <form method="POST" th:action="|/bugs/delete|" id="delete-form">
-              <input type="hidden" id="bugId" name="bugId" th:value="${bug.id}" />
-              <button type="button" class="btn btn-danger" id="as2">Delete</button>
-            </form>
-          </td>
-        </div>
+        <td>
+          <form method="POST" th:action="|/bugs/delete|">
+            <input type="hidden" name="bugId" th:value="${bug.id}" />
+            <button type="button" class="btn btn-danger delete-btn">Удалить</button>
+          </form>
+        </td>
       </tr>
-
       </tbody>
     </table>
-
-
   </div>
-</main><!-- /.container -->
+</main>
 
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
-<script src="../../assets/js/vendor/popper.min.js"></script>
-<script src="../../dist/js/bootstrap.min.js"></script>
 <script>
-
-  document.getElementById("as2").addEventListener("click", function(){
-
-   if (confirm("Are you sure to submit")) {
-      document.getElementById("delete-form").submit();
-   } else {
-      return false;
-   }
-
-
+  document.addEventListener("DOMContentLoaded", function() {
+    var deleteButtons = document.getElementsByClassName("delete-btn");
+    for (var i = 0; i < deleteButtons.length; i++) {
+      deleteButtons[i].addEventListener("click", function() {
+        if (confirm("Вы уверены?")) {
+          this.parentElement.submit();
+        }
+      });
+    }
   });
-
 </script>
 </body>
 </html>

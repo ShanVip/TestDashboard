@@ -2,6 +2,7 @@ package com.project.testdashboard.controllers;
 
 import com.project.testdashboard.entities.Bug;
 import com.project.testdashboard.services.BugService;
+import com.project.testdashboard.services.TestCaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @RequestMapping("/bugs")
 public class BugController {
     private final BugService bugService;
+    private final TestCaseService testCaseService;
 
 
     private boolean isValidPriority(String priority) {
@@ -29,8 +31,9 @@ public class BugController {
     }
 
     @Autowired
-    public BugController(BugService bugService) {
+    public BugController(BugService bugService, TestCaseService testCaseService) {
         this.bugService = bugService;
+        this.testCaseService = testCaseService;
     }
 
     @GetMapping("/")
@@ -100,6 +103,7 @@ public class BugController {
 
     @GetMapping("/status-summary")
     public String getStatusSummary(Model model) {
+        int totalTestCases = testCaseService.getTotalTestCase();
         int totalBugs = bugService.getTotalBugs();
         int openBugs = bugService.getOpenBugsCount();
         int closedBugs = bugService.getClosedBugsCount();
@@ -107,6 +111,8 @@ public class BugController {
         int openPercentage = (int) Math.round((double) openBugs / totalBugs * 100);
         int closedPercentage = (int) Math.round((double) closedBugs / totalBugs * 100);
 
+        model.addAttribute("totalTestCases", totalTestCases);
+        model.addAttribute("totalBugs", totalBugs);
         model.addAttribute("openedBugCount", openBugs);
         model.addAttribute("openedBugPercentage", openPercentage);
         model.addAttribute("closedBugCount", closedBugs);
